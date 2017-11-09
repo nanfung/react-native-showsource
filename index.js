@@ -6,23 +6,11 @@ import {Crashlytics, Answers} from 'react-native-fabric';
 import RNFS from "react-native-fs";
 import SourceMap from "source-map";
 
-let sourceMapper = undefined;
-
 export function init() {
   if (__DEV__) {
     return
   }
   let originalHandler = ErrorUtils.getGlobalHandler();
-  let sourcemaplink;
-  (async function () {
-    if (Platform.OS === "ios") {
-      sourcemaplink = await RNFS.readFile(RNFS.MainBundlePath + "/main.jsbundle.map");
-    } else if (Platform.OS === "android") {
-      sourcemaplink = await RNFS.readFileAssets("index.android.bundle.map");
-    }
-    sourceMapper = await createSourceMapper(sourcemaplink);
-  })()
-
   async function errorHandler(e, isFatal) {
     const options = {};
     try {
@@ -30,6 +18,13 @@ export function init() {
         // sourceCache: sourcemaplink,
         offline: true
       };
+      let sourcemaplink;
+      if (Platform.OS == "ios") {
+        sourcemaplink = await RNFS.readFile(RNFS.MainBundlePath + "/main.jsbundle.map");
+      } else if (Platform.OS == "android") {
+        sourcemaplink = await RNFS.readFileAssets("index.android.bundle.map");
+      }
+      const sourceMapper = await createSourceMapper(sourcemaplink);
       const minStackTrace = await StackTrace.fromError(e, option);
       const stackTrace = minStackTrace.map(row => {
         const mapped = sourceMapper(row);
