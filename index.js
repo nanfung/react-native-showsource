@@ -11,8 +11,8 @@ export function init() {
     return
   }
   let originalHandler = ErrorUtils.getGlobalHandler();
-  let sourcemaplink;
-  let sourceMapper;
+  var sourcemaplink;
+  var sourceMapper;
     async function errorHandler(e, isFatal) {
     const options = {};
     try {
@@ -25,7 +25,7 @@ export function init() {
       } else if (Platform.OS == "android") {
         sourcemaplink = await RNFS.readFileAssets("index.android.bundle.map");
       }
-      await createSourceMapper(sourcemaplink);
+      const mapper = await createSourceMapper(sourcemaplink);
       const minStackTrace = await StackTrace.fromError(e, option);
       const stackTrace = minStackTrace.map(row => {
         const mapped = sourceMapper(row);
