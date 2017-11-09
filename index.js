@@ -9,18 +9,27 @@ import SourceMap from "source-map";
 let sourceMapper = undefined;
 
 export function init() {
-  var originalHandler = ErrorUtils.getGlobalHandler();
+  if (__DEV__) {
+    return
+  }
+  let originalHandler = ErrorUtils.getGlobalHandler();
+  let sourcemaplink;
+  (async function () {
+    if (Platform.OS === "ios") {
+      sourcemaplink = await RNFS.readFile(RNFS.MainBundlePath + "/main.jsbundle.map");
+    } else if (Platform.OS === "android") {
+      sourcemaplink = await RNFS.readFileAssets("index.android.bundle.map");
+    }
+    sourceMapper = await createSourceMapper(sourcemaplink);
+  })()
 
   async function errorHandler(e, isFatal) {
     const options = {};
     try {
-      const sourcemaplink = await RNFS.readFileAssets("index.android.bundle.map");
-      console.log(await RNFS.readDirAssets(""));
       const option = {
         // sourceCache: sourcemaplink,
         offline: true
       };
-      sourceMapper = await createSourceMapper(sourcemaplink);
       const minStackTrace = await StackTrace.fromError(e, option);
       const stackTrace = minStackTrace.map(row => {
         const mapped = sourceMapper(row);
