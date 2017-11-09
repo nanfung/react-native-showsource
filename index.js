@@ -35,8 +35,8 @@ export function init() {
         return {
           fileName,
           functionName,
-          lineNumber: mapped.line,
-          columnNumber: mapped.column,
+          lineNumber: mapped.line || -1,
+          columnNumber: mapped.column || -1,
           position: `${functionName}@${fileName}:${mapped.line}:${mapped.column}`
         };
       });
