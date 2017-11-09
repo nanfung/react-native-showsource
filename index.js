@@ -11,20 +11,21 @@ export function init() {
     return
   }
   let originalHandler = ErrorUtils.getGlobalHandler();
-  async function errorHandler(e, isFatal) {
+  let sourcemaplink;
+  let sourceMapper;
+    async function errorHandler(e, isFatal) {
     const options = {};
     try {
       const option = {
         // sourceCache: sourcemaplink,
         offline: true
       };
-      let sourcemaplink;
       if (Platform.OS == "ios") {
         sourcemaplink = await RNFS.readFile(RNFS.MainBundlePath + "/main.jsbundle.map");
       } else if (Platform.OS == "android") {
         sourcemaplink = await RNFS.readFileAssets("index.android.bundle.map");
       }
-      const sourceMapper = await createSourceMapper(sourcemaplink);
+      await createSourceMapper(sourcemaplink);
       const minStackTrace = await StackTrace.fromError(e, option);
       const stackTrace = minStackTrace.map(row => {
         const mapped = sourceMapper(row);
