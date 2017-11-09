@@ -1,0 +1,32 @@
+{
+  "name": "react-native-showsource",
+  "version": "1.0.0",
+  "description": "react native showsource",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nanfung/react-native-showsource.git"
+  },
+  "keywords": [
+    "react",
+    "native"
+  ],
+  "author": "Tsuki",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nanfung/react-native-showsource/issues"
+  },
+  "homepage": "https://github.com/nanfung/react-native-showsource#readme",
+  "dependencies": {
+    "stacktrace-js": "~2.0.0"
+  },
+  "peerDependencies":{
+    "react-native-fs": "~2.4.0",
+    "source-map": "~0.6.1",
+    "react-native-fabric": "~0.5.1",
+    "react-native": "*"
+  }
+}
